@@ -9,9 +9,11 @@ class StorageKeys {
   StorageKeys._();
   static const token = 'cm_token';
   static const user = 'cm_user';
-  static const customer = 'cm_customer';
-  static const rider = 'cm_rider';
-  static const agent = 'cm_agent';
+  static const employee = 'cm_employee';
+  static const admin = 'cm_admin';
+  static const hr = 'cm_hr';
+  static const applicant= 'cm_applicant';
+  static const manager= 'cm_manager';
 
 }
 
@@ -53,9 +55,11 @@ class StorageService{
   Future<void> clearSession() async {
     await _storage.delete(key: StorageKeys.token);
     await _storage.delete(key: StorageKeys.user);
-    await _storage.delete(key: StorageKeys.customer);
-    await _storage.delete(key: StorageKeys.rider);
-    await _storage.delete(key: StorageKeys.agent);
+    await _storage.delete(key: StorageKeys.employee);
+    await _storage.delete(key: StorageKeys.admin);
+    await _storage.delete(key: StorageKeys.hr);
+    await _storage.delete(key: StorageKeys.manager);
+    await _storage.delete(key: StorageKeys.applicant);
   }
 
 

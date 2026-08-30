@@ -1,6 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:my_hrm/entity/request/Forgot_Password_Request.dart';
+import 'package:my_hrm/entity/request/LoginRequest.dart';
+import 'package:my_hrm/entity/request/ResetPasswordRequest.dart';
 import 'package:my_hrm/entity/response/LoginResponse.dart';
 import 'package:my_hrm/service/StorageService.dart';
+import 'package:my_hrm/util/ApiClient.dart';
+import 'package:my_hrm/util/ApiConstants.dart';
 
 class AuthRepository{
 

@@ -1,3 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:my_hrm/auth/auth_provider.dart';
+import 'package:my_hrm/them/AppThem.dart';
+import 'package:my_hrm/util/ApiClient.dart';
+import 'package:my_hrm/widget/CommonWidget.dart';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -62,7 +69,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 32),
-                    color: AppTheme.primary,
+                    color: AppThem.primary,
                     child: const Column(
                       children: [
                         Icon(
@@ -74,7 +81,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         SizedBox(height: 8),
 
                         Text(
-                          "Courier Service",
+                          "My HRM",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,

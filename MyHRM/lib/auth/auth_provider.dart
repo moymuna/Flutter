@@ -1,22 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:my_hrm/auth/auth_repository.dart';
-import 'package:my_hrm/auth/providers.dart';
-import 'package:my_hrm/entity/request/LoginRequest.dart';
-import 'package:my_hrm/entity/response/LoginResponse.dart';
-
+import 'package:my_hrm/shared/providers.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-
   return AuthRepository(
     ref.watch(apiClientProvider),
     ref.watch(storageServiceProvider),
   );
 });
 
-
-class AuthController extends StateNotifier<AsyncValue<LoginResponse?>>{
-
+class AuthController extends StateNotifier<AsyncValue<Map<String, dynamic>?>> {
   AuthController(this._ref) : super(const AsyncValue.loading()) {
     _restoreSession();
   }
@@ -33,9 +26,10 @@ class AuthController extends StateNotifier<AsyncValue<LoginResponse?>>{
     state = const AsyncValue.loading();
     try {
       final repo = _ref.read(authRepositoryProvider);
-      final res = await repo.login(
-        LoginRequest(email: email, password: password),
-      );
+      final res = await repo.login(LoginRequestDto(
+        email: email,
+        password: password,
+      ));
       state = AsyncValue.data(res);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -47,18 +41,14 @@ class AuthController extends StateNotifier<AsyncValue<LoginResponse?>>{
     await _ref.read(authRepositoryProvider).logout();
     state = const AsyncValue.data(null);
   }
-
-
 }
 
 final authControllerProvider =
-StateNotifierProvider<AuthController, AsyncValue<LoginResponse?>>((ref) {
+    StateNotifierProvider<AuthController, AsyncValue<Map<String, dynamic>?>>(
+        (ref) {
   return AuthController(ref);
 });
 
-/// Convenience: current user, or null. Returns null while loading too, so
-/// only use this where a brief null flash during startup is acceptable
-/// (e.g. UI that already handles a splash/loading state via the router).
-final currentUserProvider = Provider<LoginResponse?>((ref) {
+final currentUserProvider = Provider<Map<String, dynamic>?>((ref) {
   return ref.watch(authControllerProvider).value;
 });

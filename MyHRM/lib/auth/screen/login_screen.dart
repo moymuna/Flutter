@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:my_hrm/auth/auth_provider.dart';
-import 'package:my_hrm/them/AppThem.dart';
-import 'package:my_hrm/util/ApiClient.dart';
-import 'package:my_hrm/widget/CommonWidget.dart';
+import 'package:my_hrm/core/theme/app_theme.dart';
+import 'package:my_hrm/core/network/api_error_handler.dart';
+import 'package:my_hrm/core/widgets/common_widgets.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -41,10 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           .read(authControllerProvider.notifier)
           .login(_emailCtrl.text.trim(), _passwordCtrl.text);
       if (!mounted) return;
-      // Hand off to RoleRedirectScreen ('/'), which reads the now-updated
-      // authControllerProvider and sends the user to the right dashboard —
-      // mirrors role-redirect.ts being the landing route after login.
-      Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+      context.go('/');
     } catch (e) {
       setState(() => _errorMessage = apiErrorMessage(e));
     } finally {
@@ -59,27 +57,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 460),
+            constraints: const BoxConstraints(maxWidth: 460),
             child: Card(
               clipBehavior: Clip.antiAlias,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // ── Header ──────────────────────────────
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 32),
-                    color: AppThem.primary,
+                    color: AppColors.primary,
                     child: const Column(
                       children: [
                         Icon(
-                          Icons.inventory_2_rounded,
+                          Icons.business,
                           color: Colors.white,
                           size: 44,
                         ),
-
                         SizedBox(height: 8),
-
                         Text(
                           "My HRM",
                           style: TextStyle(
@@ -96,8 +91,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ],
                     ),
                   ),
-
-                  // ── Form ────────────────────────────────
                   Padding(
                     padding: const EdgeInsets.all(24),
                     child: Form(
@@ -106,7 +99,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           if (_errorMessage != null)
                             ErrorBanner(message: _errorMessage!),
-
                           TextFormField(
                             controller: _emailCtrl,
                             keyboardType: TextInputType.emailAddress,
@@ -115,18 +107,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               prefixIcon: Icon(Icons.email_outlined),
                               hintText: 'you@example.com',
                             ),
-
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) {
                                 return 'Enter a valid email.';
                               }
-                              if (!v.contains('@'))
-                                return 'Enter a valid email.';
+                              if (!v.contains('@')) return 'Enter a valid email.';
                               return null;
                             },
                           ),
                           const SizedBox(height: 16),
-
                           TextFormField(
                             controller: _passwordCtrl,
                             obscureText: !_showPassword,
@@ -139,20 +128,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     ? Icons.visibility_off
                                     : Icons.visibility),
                                 onPressed: () => setState(
-                                        () => _showPassword = !_showPassword),
+                                    () => _showPassword = !_showPassword),
                               ),
                             ),
-                            validator: (v) => (v == null || v.isEmpty)
-                                ? 'Password is required.'
-                                : null,
+                            validator: (v) =>
+                                (v == null || v.isEmpty) ? 'Password is required.' : null,
                             onFieldSubmitted: (_) => _login(),
                           ),
-
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
-                              onPressed: () =>
-                                  Navigator.of(context).pushNamed('/forgot-password'),
+                              onPressed: () => context.push('/forgot-password'),
                               child: const Text('Forgot password?'),
                             ),
                           ),
@@ -162,15 +148,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             loading: _loading,
                             icon: Icons.login,
                             onPressed: _login,
-
                           ),
                           const SizedBox(height: 12),
                           TextButton(
-                            onPressed: () =>
-                                Navigator.of(context).pushNamed('/register'),
+                            onPressed: () => context.push('/register'),
                             child: const Text("Don't have an account? Register"),
                           ),
-
                         ],
                       ),
                     ),
